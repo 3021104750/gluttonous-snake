@@ -67,9 +67,26 @@ class GameControls {
     }, 250);
   }
 
+  delay() {
+    return 240 - (this.scorePanel.level - 1) * 35;
+  }
+
+  // 节流
+  throttle = (fn: Function) => {
+    let last: number = 0;
+    let _this = this;
+    return function () {
+      let now: number = +new Date();
+      if (now - last > _this.delay()) {
+        fn.apply(_this, arguments);
+        last = now;
+      }
+    }
+  }
+
   // 使用箭头函数，不然在addEventListner的时候，this指向的是document，而不是GameControls。
   // 如果不使用箭头函数，可以在调用的时候用bind重新调整this的指向（this.keydownHandler.bind(this)）, bind创建了一个新的函数，把新函数的this绑定到了当前this
-  keydownHandler = (e: KeyboardEvent) => {
+  keydownHandler = this.throttle((e: KeyboardEvent) => {
     e.preventDefault();
     // 判断按的是否是方向键，是的话才能进行下一步判断，否则蛇不做任何反应
     if (e.key === 'ArrowRight' || e.key === 'ArrowLeft' || e.key === 'ArrowUp' || e.key === 'ArrowDown') {
@@ -92,7 +109,7 @@ class GameControls {
         }
       }
     }
-  }
+  });
 
   // 控制蛇移动
   run() {
