@@ -14,7 +14,7 @@ class GameControls {
   deadFlag: boolean; // 是否撞墙，游戏结束
   tempX: number; // 零时储存蛇的X轴
   tempY: number; // 零时储存蛇的Y轴
-  timer: any; // 蛇运动起来的定时器
+  timer: any; // 让蛇运动起来的定时器
 
   constructor() {
     this.snake = new Snake();
