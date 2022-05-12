@@ -67,11 +67,13 @@ class GameControls {
     }, 250);
   }
 
+  // 节流函数延迟的时间，此时间和蛇移动的速度一致，根据关卡的高低来慢慢减小
+  // 此延迟时间单独写在一个函数里是因为直接写字节流函数里有变量在声明前使用问题（例如this.scorePanel在定义前使用）
   delay() {
     return 240 - (this.scorePanel.level - 1) * 35;
   }
 
-  // 节流
+  // 节流，防止方向键多次点击导致this.direction快速变化，导致蛇还未移动到下一步，方向就提前变了
   throttle = (fn: Function) => {
     let last: number = 0;
     let _this = this;
