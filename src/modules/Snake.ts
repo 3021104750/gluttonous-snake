@@ -50,7 +50,7 @@ class Snake {
 
   addBody() {
     // 在end tag前添加一个div（添加一个蛇的身体）
-    this.snakeEle.insertAdjacentHTML('beforeend', '<div></div>');
+    this.snakeEle.insertAdjacentHTML('beforeend', '<div style="display: none"></div>');
   }
 
   /* 
@@ -66,6 +66,7 @@ class Snake {
 
       (this.bodyEle[i] as HTMLElement).style.left = X + 'px';
       (this.bodyEle[i] as HTMLElement).style.top = Y + 'px';
+      (this.bodyEle[i] as HTMLElement).style.display = 'block';
     }
   }
 }
