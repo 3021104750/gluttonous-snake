@@ -32,7 +32,7 @@ module.exports = {
                   {
                     // 要兼容的目标浏览器
                     targets: {
-                      "chrome": "58",
+                      "chrome": "80",
                       "ie": "11"
                     },
                     // 指定corejs的版本
@@ -51,7 +51,7 @@ module.exports = {
       },
       // 设置less文件处理
       {
-        test: /\.less$/,
+        test: /\.(less|css)$/,
         use: [
           "style-loader",
           "css-loader",

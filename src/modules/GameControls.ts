@@ -1,6 +1,8 @@
 import Food from './Food';
 import ScorePanel from './ScorePanel';
 import Snake from './Snake';
+import 'animate.css'; // animate.css
+import { animateForSingleDom } from '../api/plugins';
 
 // 游戏的整个控制器，控制其他所有类
 class GameControls {
@@ -30,27 +32,12 @@ class GameControls {
     this.timer = null;
   }
 
-  // 调用后控制蛇的方向
-  directionControls() {
-    // 绑定键盘按键按下的事件
-    document.addEventListener('keydown', this.keydownHandler);
-  }
-
   // 初始化游戏，重置值
   initGame() {
     this.startEle.style.display = 'none';
     this.hintEle.style.display = 'none';
     this.direction = 'ArrowRight'; // 最初方向
-    /* 
-      每次重新开始游戏前，都要检查下蛇的身体长度，长度大于1的说明蛇有两节或两节以上身子，要把这些身子去除掉
-      因此判断在length大于1的时候，删掉多余身子的dom节点
-      因为每次删除一个节点，后面的节点会向前补齐，所以每次只要删除索引为1的节点就行了
-    */
-    let length = this.snake.bodyEle.length - 1; // 蛇一共有几节
-    for (let i = 0; i < length; i++) {
-      // 删除除了蛇的第一节的dom节点
-      this.snake.snakeEle.removeChild(this.snake.bodyEle[1]);
-    }
+    this.resetSnakeBodyLength(); // 重置蛇的身体长度为一
     this.snake.X = 0; // 蛇的左偏移
     this.snake.Y = 0; // 蛇的右偏移
     this.tempX = 0; // 临时左偏移
@@ -65,6 +52,19 @@ class GameControls {
       this.run(); // 蛇动起来
       this.directionControls(); // 调用后控制蛇的方向
     }, 250);
+  }
+
+  /* 
+    每次重新开始游戏前，都要检查下蛇的身体长度，长度大于1的说明蛇有两节或两节以上身子，要把这些身子去除掉
+    因此判断在length大于1的时候，删掉多余身子的dom节点
+    因为每次删除一个节点，后面的节点会向前补齐，所以每次只要删除索引为1的节点就行了
+  */
+  resetSnakeBodyLength() {
+    let length = this.snake.bodyEle.length - 1; // 蛇一共有几节
+    for (let i = 0; i < length; i++) {
+      // 删除除了蛇的第一节的dom节点
+      this.snake.snakeEle.removeChild(this.snake.bodyEle[1]);
+    }
   }
 
   // 节流函数延迟的时间，此时间和蛇移动的速度一致，根据关卡的高低来慢慢减小
@@ -113,8 +113,14 @@ class GameControls {
     }
   });
 
+  // 调用后控制蛇的方向
+  directionControls() {
+    // 绑定键盘按键按下的事件
+    document.addEventListener('keydown', this.keydownHandler);
+  }
+
   // 控制蛇移动
-  run() {
+  async run() {
     switch (this.direction) {
       case 'ArrowUp':
         // 如果Y小于0的话，游戏结束
@@ -184,7 +190,7 @@ class GameControls {
 
     this.timer = setTimeout(() => {
       this.run(); // 蛇动起来
-    }, 240 - (this.scorePanel.level - 1) * 35); // 蛇移动速度随着level越高越快
+    }, this.delay()); // 蛇移动速度随着level越高越快
 
     // 当游戏结束时，停止计时器
     if (this.deadFlag === true) {
@@ -194,9 +200,13 @@ class GameControls {
 
     // 判断是否吃到食物（蛇头坐标是否和食物坐标一致）
     if (this.snake.X === this.food.X && this.snake.Y === this.food.Y) {
+      animateForSingleDom('#main', 'tada', '0.6s');
+      animateForSingleDom('#stage', 'flipInX', '0.4s').then(value => {
+        animateForSingleDom('#stage', 'flipInY', '0.4s');
+      });
       this.food.changePosition(); // 改变食物位置
-      this.scorePanel.addScore(); // 改变计分牌分数
       this.snake.addBody(); // 增加一节蛇的身体
+      this.scorePanel.addScore(); // 改变计分牌分数
     }
 
     // 检查蛇头部和身体有没有相撞，相撞则结束游戏

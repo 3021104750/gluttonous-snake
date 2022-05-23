@@ -61,12 +61,12 @@ class Snake {
   moveBody() {
     // 因为是最后一节开始修改的，所以for循环倒着来
     for (let i = this.bodyEle.length - 1; i > 0; i--) {
-      let X = (this.bodyEle[i - 1] as HTMLElement).offsetLeft;
-      let Y = (this.bodyEle[i - 1] as HTMLElement).offsetTop;
+      let X = (<HTMLElement>this.bodyEle[i - 1]).offsetLeft;
+      let Y = (<HTMLElement>this.bodyEle[i - 1]).offsetTop;
 
-      (this.bodyEle[i] as HTMLElement).style.left = X + 'px';
-      (this.bodyEle[i] as HTMLElement).style.top = Y + 'px';
-      (this.bodyEle[i] as HTMLElement).style.display = 'block';
+      (<HTMLElement>this.bodyEle[i]).style.left = X + 'px';
+      (<HTMLElement>this.bodyEle[i]).style.top = Y + 'px';
+      (<HTMLElement>this.bodyEle[i]).style.display = 'block';
     }
   }
 }
